@@ -45,6 +45,7 @@ void loop() {
   // --- Read button with debounce ---
   int reading = digitalRead(buttonPin);
   if (reading != lastButtonState) {
+    //millis() returns the number of milliseconds since the Arduino started
     lastDebounceTime = millis(); // reset timer if button changed
   }
   if ((millis() - lastDebounceTime) > debounceDelay) { //If button stable for >50 ms → accept reading
@@ -89,9 +90,9 @@ void loop() {
   ```
 
   } else {
-  // Manual mode → turn off devices initially
-  digitalWrite(ledDevice, LOW);
-  digitalWrite(buzzer, LOW);
+    // Manual mode → turn off devices initially
+    digitalWrite(ledDevice, LOW);
+    digitalWrite(buzzer, LOW);
   }
 
   // Update LED2 to reflect any active device
