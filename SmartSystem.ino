@@ -3,7 +3,7 @@
 // Pin Definitions
 const int pirPin = 2;          // PIR motion sensor
 const int ldrPin = A0;         // Light sensor
-const int tempPin = A1;        // Temperature sensor
+const int tempPin = A1;        // Temperature sensor - LM35
 const int buttonPin = 3;       // Push button
 const int ledAuto = 9;         // Auto mode indicator LED
 const int ledDevice = 10;      // Device active LED
@@ -12,21 +12,21 @@ const int buzzer = 11;         // Buzzer alert
 // Variables
 bool autoMode = true;          // System starts in auto mode
 bool deviceActive = false;
-int buttonState = 0;
-int lastButtonState = 0;
-unsigned long lastDebounceTime = 0;
+int buttonState = 0;//used for detecting button press
+int lastButtonState = 0;//used for detecting button press
+unsigned long lastDebounceTime = 0;//stores last time the button changed state
 unsigned long debounceDelay = 50; // Debounce delay (ms)
 
 // Thresholds: above thresholds values, do actions
-const int tempThreshold = 30;      // Temperature threshold in °C
-const int ldrThreshold = 500;      // LDR threshold (0–1023)
+const int tempThreshold = 30;      // Temperature threshold in °C - If temperature > 30°C → buzzer alert
+const int ldrThreshold = 500;      // LDR threshold (0–1023) - If lightLevel < 500 → LED ON (it's dark)
 
 // Setup function
 void setup() {  
   pinMode(pirPin, INPUT);
   pinMode(ldrPin, INPUT);
   pinMode(tempPin, INPUT);
-  pinMode(buttonPin, INPUT_PULLUP); // internal pull-up resistor for button
+  pinMode(buttonPin, INPUT_PULLUP); // internal pull-up resistor for button - gives the button a default HIGH value
   pinMode(ledAuto, OUTPUT);
   pinMode(ledDevice, OUTPUT);
   pinMode(buzzer, OUTPUT);
@@ -45,9 +45,9 @@ void loop() {
   // --- Read button with debounce ---
   int reading = digitalRead(buttonPin);
   if (reading != lastButtonState) {
-    lastDebounceTime = millis(); // Time passed since Arduino started
+    lastDebounceTime = millis(); // reset timer if button changed
   }
-  if ((millis() - lastDebounceTime) > debounceDelay) {
+  if ((millis() - lastDebounceTime) > debounceDelay) { //If button stable for >50 ms → accept reading
     if (reading != buttonState) {
       buttonState = reading;
       if (buttonState == LOW) {  // button pressed
