@@ -87,7 +87,6 @@ void loop() {
     digitalWrite(buzzer, HIGH);
     deviceActive = true;
   }
-  ```
 
   } else {
     // Manual mode → turn off devices initially
